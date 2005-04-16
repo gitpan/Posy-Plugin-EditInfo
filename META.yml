@@ -1,0 +1,18 @@
+--- #YAML:1.0
+name: Posy-Plugin-EditInfo
+version: 0.0102
+author:
+  - Kathryn Andersen
+abstract: |-
+  Posy plugin to edit supplementary entry information.
+license: perl
+requires:
+  Posy: 0.94
+  Posy::Plugin::Info: 0
+build_requires:
+  Test::More: 0
+provides:
+  Posy::Plugin::EditInfo:
+    file: lib/Posy/Plugin/EditInfo.pm
+    version: 0.0102
+generated_by: Module::Build version 0.2608

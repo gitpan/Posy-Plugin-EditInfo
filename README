@@ -1,0 +1,186 @@
+
+==== NAME ====
+
+Posy::Plugin::EditInfo - Posy plugin to edit supplementary entry
+information.
+
+
+==== VERSION ====
+
+This describes version ``0.0102'' of Posy::Plugin::EditInfo.
+
+
+==== DESCRIPTION ====
+
+This plugin enables the user to create and edit .info files of the type used
+by Posy::Plugin::Info. This relies on external .htaccess setup for password
+protection, so if you can't set such a thing up, do not use this module
+unless you want anyone to be able to create .info files.
+
+This plugin provides $entry_edit_info_form flavour variable, and
+'set_edit_info_form' and 'process_edit_info_form' actions.
+
+
+==   Password Protection   ==
+
+For details of how to set up password protection for a directory, check your
+webserver documentation. Here is some advice, however.
+
+If you password-protect your whole site, then nobody could even view the
+site without having a user-password. This is probably not what you want. The
+easiest method of protecting editing is to make a copy of your posy.cgi
+script (say, posy_edit.cgi) and make separate directory to put it in (say,
+"cgi-bin/posy_edit_info/"), put the posy_edit.cgi script into it, and
+password-protect that directory.
+
+Then edit ``posy_edit.cgi'' to add the Posy::Plugin::EditInfo configuration
+requirements (and remove extra plugins that you don't actually need for
+this).
+
+
+==   Configuration   ==
+
+This expects configuration settings in the $self->{config} hash, which, in
+the default Posy setup, can be defined in the main "config" file in the
+config directory.
+
+``edit_info_url''
+The url of the edit-info CGI script. (default: $self->{url})
+
+``edit_info_spec''
+Define the info-fields and their properties.
+
+    edit_info_spec:
+      order:
+        - Author
+        - Title
+        - Series
+        - SeriesOrder
+        - Rating
+        - Summary
+      default:
+        type: text
+        size: 40
+      options:
+        Summary:
+          type: textarea
+          rows: 5
+          cols: 70
+        Rating:
+          type: select
+          options:
+            - G
+            - PG
+            - PG13
+            - R
+            - NC17
+
+The 'order' part of the spec is the order the fields are to be presented in
+the form. The 'options' part of the spec gives optional options for each
+field, while the 'default' part of the spec gives the default kind of
+input-type which fields are if they don't appear in the 'options' part. The
+'type' is the type of input field which will be used in the form. The other
+parts are specific to the particular type of input field.
+
+Possible types are:
+
+text
+A normal "text" input field. The 'size' gives the size of the field.
+
+textarea
+A "textarea" input field. The "rows" and "cols" are the rows and columns.
+
+select
+A "select" input field. The "options" are the list of options for that
+select.
+
+
+==== INSTALLATION ====
+
+Installation needs will vary depending on the particular setup a person has.
+
+
+==   Administrator, Automatic   ==
+
+If you are the administrator of the system, then the dead simple method of
+installing the modules is to use the CPAN or CPANPLUS system.
+
+    cpanp -i Posy::Plugin::EditInfo
+
+This will install this plugin in the usual places where modules get
+installed when one is using CPAN(PLUS).
+
+
+==   Administrator, By Hand   ==
+
+If you are the administrator of the system, but don't wish to use the
+CPAN(PLUS) method, then this is for you. Take the *.tar.gz file and untar it
+in a suitable directory.
+
+To install this module, run the following commands:
+
+    perl Build.PL
+    ./Build
+    ./Build test
+    ./Build install
+
+Or, if you're on a platform (like DOS or Windows) that doesn't like the "./"
+notation, you can do this:
+
+   perl Build.PL
+   perl Build
+   perl Build test
+   perl Build install
+
+
+==   User With Shell Access   ==
+
+If you are a user on a system, and don't have root/administrator access, you
+need to install Posy somewhere other than the default place (since you don't
+have access to it). However, if you have shell access to the system, then
+you can install it in your home directory.
+
+Say your home directory is "/home/fred", and you want to install the modules
+into a subdirectory called "perl".
+
+Download the *.tar.gz file and untar it in a suitable directory.
+
+    perl Build.PL --install_base /home/fred/perl
+    ./Build
+    ./Build test
+    ./Build install
+
+This will install the files underneath /home/fred/perl.
+
+You will then need to make sure that you alter the PERL5LIB variable to find
+the modules.
+
+Therefore you will need to change the PERL5LIB variable to add
+/home/fred/perl/lib
+
+        PERL5LIB=/home/fred/perl/lib:${PERL5LIB}
+
+
+==== REQUIRES ====
+
+    Posy
+    Posy::Core
+    Posy::Plugin::Info
+
+    Test::More
+
+
+==== AUTHOR ====
+
+    Kathryn Andersen (RUBYKAT)
+    perlkat AT katspace dot com
+    http://www.katspace.com
+
+
+==== COPYRIGHT AND LICENCE ====
+
+Copyright (c) 2005 by Kathryn Andersen
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+

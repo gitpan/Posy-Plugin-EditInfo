@@ -1,0 +1,23 @@
+Revision history for Posy-Plugin-EditInfo
+=========================================
+
+0.0102 Sat 16 April 2005
+------------------------
+
+  * (16 Apr 2005) nother stupid bug
+
+0.0101 Sat 16 April 2005
+------------------------
+
+* (16 Apr 2005) stupid bug
+
+0.01 Sat 16 April 2005
+----------------------
+
+  * (16 Apr 2005) added a Get Info button
+  	The Get Info button will populate the form with the Info
+  from the selected file-with-a-similar-name in the same directory
+  as the current file.  Useful for multi-part stories whose info
+  is the same except for the part-number.
+
+  * (16 Apr 2005) initial checkin
