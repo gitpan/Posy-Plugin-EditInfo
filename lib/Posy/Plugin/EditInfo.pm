@@ -7,11 +7,11 @@ Posy::Plugin::EditInfo - Posy plugin to edit supplementary entry information.
 
 =head1 VERSION
 
-This describes version B<0.0102> of Posy::Plugin::EditInfo.
+This describes version B<0.02> of Posy::Plugin::EditInfo.
 
 =cut
 
-our $VERSION = '0.0102';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,13 @@
 Revision history for Posy-Plugin-EditInfo
 =========================================
 
+0.02 Thu 12 May 2005
+--------------------
+
+  * (12 May 2005) update Posy version
+
+  * (12 May 2005) add Makefile.PL
+
 0.0102 Sat 16 April 2005
 ------------------------
 
