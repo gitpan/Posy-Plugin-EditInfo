@@ -7,11 +7,11 @@ Posy::Plugin::EditInfo - Posy plugin to edit supplementary entry information.
 
 =head1 VERSION
 
-This describes version B<0.02> of Posy::Plugin::EditInfo.
+This describes version B<0.03> of Posy::Plugin::EditInfo.
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -83,46 +83,43 @@ Define the info-fields and their properties.
 	- Rating
 	- Summary
       default:
-        type: text
+	type: string
 	size: 40
+	rows: 4
+	cols: 60
       options:
         Summary:
-          type: textarea
 	  rows: 5
           cols: 70
-        Rating:
-          type: select
-	  options:
-	    - G
-	    - PG
-	    - PG13
-	    - R
-	    - NC17
 
 The 'order' part of the spec is the order the fields are to be presented
 in the form.
 The 'options' part of the spec gives optional options for each field,
-while the 'default' part of the spec gives the default kind of input-type
-which fields are if they don't appear in the 'options' part.
-The 'type' is the type of input field which will be used in the form.
-The other parts are specific to the particular type of input field.
+while the 'default' part of the spec gives the default kind of form layout
+for fields are if they don't appear in the 'options' part, and the
+default type to use if the field isn't given a type in the I<info_type_spec>.
 
-Possible types are:
+The type of a field depends on the I<info_type_spec> definition used
+by L<Posy::Plugin::Info>.  Types are 'string', 'text', 'number', 'title',
+and 'limited'
+
+Possible options depend on the type of field:
 
 =over
 
+=item string/number/title
+
+Displayed as a "text" input field.  The 'size' gives the size of the field.
+
 =item text
 
-A normal "text" input field.  The 'size' gives the size of the field.
+Displayed as a "textarea" input field. The "rows" and "cols" are the rows
+and columns.
 
-=item textarea
+=item limited
 
-A "textarea" input field. The "rows" and "cols" are the rows and columns.
-
-=item select
-
-A "select" input field.  The "options" are the list of options for
-that select.
+Displayed as a "select" input field, using its associated 'values' to be
+the list of options for that select.
 
 =back
 
@@ -216,7 +213,8 @@ sub set_edit_info_form {
     my $current_entry = shift;
     my $entry_state = shift;
 
-    if (defined $self->{config}->{edit_info_spec})
+    if (defined $self->{config}->{info_type_spec}
+	and defined $self->{config}->{edit_info_spec})
     {
 	my $edit_url = $self->{config}->{edit_info_url};
 	my $entry_id = $current_entry->{id};
@@ -252,29 +250,34 @@ EOT
 	{
 	    $form .= "<tr><td><strong>$field</strong></td>\n";
 	    my $use_default_type =
-		(!exists $self->{config}->{edit_info_spec}->{options}->{$field});
+		(!exists $self->{config}->{edit_info_spec}->{options}->{$field}
+		    and !exists $self->{config}->{info_type_spec}->{$field});
+	    my $use_option_settings =
+		(exists $self->{config}->{edit_info_spec}->{options}->{$field});
 	    my $field_type =
 		($use_default_type
 		 ? $self->{config}->{edit_info_spec}->{default}->{type}
-		 : $self->{config}->{edit_info_spec}->{options}->{$field}->{type});
-	    if ($field_type eq 'text')
+		 : $self->{config}->{info_type_spec}->{$field}->{type});
+	    if ($field_type eq 'string'
+		|| $field_type eq 'title'
+		|| $field_type eq 'number')
 	    {
 		my $size =
-		($use_default_type
+		(!$use_option_settings
 		 ? $self->{config}->{edit_info_spec}->{default}->{size}
 		 : $self->{config}->{edit_info_spec}->{options}->{$field}->{size});
 		$form .=<<EOT;
 <td><input type="text" name="$field" size="$size" value="$info{$field}"/>
 EOT
 	    }
-	    elsif ($field_type eq 'textarea')
+	    elsif ($field_type eq 'text')
 	    {
 		my $rows =
-		($use_default_type
+		(!$use_option_settings
 		 ? $self->{config}->{edit_info_spec}->{default}->{rows}
 		 : $self->{config}->{edit_info_spec}->{options}->{$field}->{rows});
 		my $cols =
-		($use_default_type
+		(!$use_option_settings
 		 ? $self->{config}->{edit_info_spec}->{default}->{cols}
 		 : $self->{config}->{edit_info_spec}->{options}->{$field}->{cols});
 		$form .=<<EOT;
@@ -282,15 +285,14 @@ EOT
 $info{$field}</textarea>
 EOT
 	    }
-	    elsif ($field_type eq 'select')
+	    elsif ($field_type eq 'limited')
 	    {
-		my @options =
-		    @{$self->{config}->{edit_info_spec}->{options}->
-		    {$field}->{options}};
+		my @values =
+		    @{$self->{config}->{info_type_spec}->{$field}->{'values'}};
 		$form .=<<EOT;
 <td><select name="$field">
 EOT
-		foreach my $opt (@options)
+		foreach my $opt (@values)
 		{
 		    if ($info{$field} eq $opt)
 		    {

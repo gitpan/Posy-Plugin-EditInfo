@@ -7,7 +7,7 @@ information.
 
 ==== VERSION ====
 
-This describes version ``0.02'' of Posy::Plugin::EditInfo.
+This describes version ``0.03'' of Posy::Plugin::EditInfo.
 
 
 ==== DESCRIPTION ====
@@ -59,40 +59,37 @@ Define the info-fields and their properties.
         - Rating
         - Summary
       default:
-        type: text
+        type: string
         size: 40
+        rows: 4
+        cols: 60
       options:
         Summary:
-          type: textarea
           rows: 5
           cols: 70
-        Rating:
-          type: select
-          options:
-            - G
-            - PG
-            - PG13
-            - R
-            - NC17
 
 The 'order' part of the spec is the order the fields are to be presented in
 the form. The 'options' part of the spec gives optional options for each
-field, while the 'default' part of the spec gives the default kind of
-input-type which fields are if they don't appear in the 'options' part. The
-'type' is the type of input field which will be used in the form. The other
-parts are specific to the particular type of input field.
+field, while the 'default' part of the spec gives the default kind of form
+layout for fields are if they don't appear in the 'options' part, and the
+default type to use if the field isn't given a type in the *info_type_spec*.
 
-Possible types are:
+The type of a field depends on the *info_type_spec* definition used by
+Posy::Plugin::Info. Types are 'string', 'text', 'number', 'title', and
+'limited'
+
+Possible options depend on the type of field:
+
+string/number/title
+Displayed as a "text" input field. The 'size' gives the size of the field.
 
 text
-A normal "text" input field. The 'size' gives the size of the field.
+Displayed as a "textarea" input field. The "rows" and "cols" are the rows
+and columns.
 
-textarea
-A "textarea" input field. The "rows" and "cols" are the rows and columns.
-
-select
-A "select" input field. The "options" are the list of options for that
-select.
+limited
+Displayed as a "select" input field, using its associated 'values' to be the
+list of options for that select.
 
 
 ==== INSTALLATION ====
